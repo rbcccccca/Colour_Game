@@ -1,9 +1,10 @@
 {
-    "compilerOptions": {
-      "allowJs": true,
-      "jsx": "react",
-      "esModuleInterop": true,
-      // ... other options
-    },
-    "include": ["src/**/*"]
-  }
+  "compilerOptions": {
+    "allowJs": true,             // Allows the use of JavaScript files
+    "jsx": "react",              // Use React JSX
+    "esModuleInterop": true,     // Ensures ES module interop
+    "skipLibCheck": true         // Skips type checking of declaration files
+  },
+  "include": ["src/**/*"],       // Include all files in the src folder
+  "exclude": ["src/**/*.js"]     // Exclude JavaScript files to avoid overwriting conflicts
+}
