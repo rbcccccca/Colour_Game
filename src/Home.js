@@ -57,10 +57,10 @@ function Home({ onStartFallingGame, onStartMatcherGame }) {
         <h1 className="title">Welcome to Colour Games!</h1>
         <div className="button-container">
           <button className="game-button" onClick={onStartFallingGame}>
-            Colour Coding
+            #000000 Coding
           </button>
           <button className="game-button" onClick={onStartMatcherGame}>
-            Colour Matching
+            ?= Matching
           </button>
         </div>
       </div>
