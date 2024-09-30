@@ -184,7 +184,7 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
       </div>
 
       {/* Monitor showing the mixed color */}
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/3 aspect-square">
+      <div className="absolute top-[40%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/5 aspect-square">
         <div
           className="w-full h-full rounded-lg shadow-lg flex items-center justify-center"
           style={{
@@ -196,6 +196,8 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
         >
         </div>
       </div>
+
+
 
 
       {/* Color adjustment buttons */}
@@ -252,7 +254,7 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
 
       {showGreenTick && (
         <div className="absolute inset-0 flex items-center justify-center">
-          <svg className="text-green-800 w-50 h-50 opacity-90 transition-opacity duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="text-green-800 w-30 h-30 opacity-90 transition-opacity duration-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
