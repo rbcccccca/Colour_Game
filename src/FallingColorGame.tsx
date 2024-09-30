@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from './components/ui/button';
-import { Pause, Play, RefreshCw, Eye, X } from 'lucide-react';
-import './Falling_Color_Game.css';  // Import the CSS file
+import { Pause, Play, RefreshCw, Eye, ArrowLeft } from 'lucide-react';
+import './Falling_Color_Game.css';  // Make sure to create this CSS file
 
 interface FallingChar {
   char: string;
@@ -10,6 +10,7 @@ interface FallingChar {
   topPosition: number;
   speed: number;
   rotation: number;
+  isClicked: boolean;
 }
 
 const generateRandomColor = () => {
@@ -64,6 +65,7 @@ const FallingColorGame: React.FC = () => {
         topPosition: Math.random() * 80,
         speed: 0.2 + Math.random() * 0.3,
         rotation: Math.random() * 360,
+        isClicked: false,
       });
     }
     setFallingChars(chars);
@@ -120,12 +122,26 @@ const FallingColorGame: React.FC = () => {
     return () => clearInterval(interval);
   }, [gameActive, gamePaused]);
 
-  const handleCharClick = (char: string) => {
+  const handleCharClick = (char: string, id: string) => {
     if (gamePaused) return;
     if (userGuess.length < 6) {
       setUserGuess(prevGuess => prevGuess + char);
       setClickedChar(char);
       setTimeout(() => setClickedChar(null), 1000);
+      
+      setFallingChars(prevChars => 
+        prevChars.map(c => 
+          c.id === id ? { ...c, isClicked: true } : c
+        )
+      );
+      
+      setTimeout(() => {
+        setFallingChars(prevChars => 
+          prevChars.map(c => 
+            c.id === id ? { ...c, isClicked: false } : c
+          )
+        );
+      }, 1000);
       
       if (userGuess.length === 5) {
         const finalGuess = userGuess + char;
@@ -194,35 +210,41 @@ const FallingColorGame: React.FC = () => {
               <div className="mt-2">Current Color: #{currentColor}</div>
             )}
           </div>
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-4">
-            <div className="mb-2 flex items-center justify-center">
-              <span className="mr-2">Your guess: {userGuess}</span>
+          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-6">
+            <div className="mb-4 flex items-center justify-center">
+              <span className="mr-4 text-2xl font-bold">Your guess: {userGuess}</span>
               {userGuess.length > 0 && (
-                <Button onClick={handleDelete} variant="outline" size="sm" className="bg-red-500 hover:bg-red-600">
-                  <X size={16} />
+                <Button 
+                  onClick={handleDelete} 
+                  variant="outline" 
+                  size="sm" 
+                  className="bg-transparent hover:bg-red-500 text-white"
+                >
+                  <ArrowLeft size={24} />
                 </Button>
               )}
             </div>
-            <div className="text-center font-bold">{feedback}</div>
+            <div className="text-center font-bold text-xl">{feedback}</div>
           </div>
           {fallingChars.map((charObj) => (
             <div
               key={charObj.id}
-              className="absolute text-4xl font-bold cursor-pointer select-none"
+              className={`absolute text-4xl font-bold cursor-pointer select-none transition-all duration-300 ${
+                charObj.isClicked ? 'text-5xl brightness-150' : ''
+              }`}
               style={{
                 left: `${charObj.position}%`,
                 top: `${charObj.topPosition}%`,
                 transform: `translate(-50%, -50%) rotate(${charObj.rotation}deg)`,
                 color: `#${complementaryColor}`,
                 textShadow: `0 0 5px #${currentColor}`,
-                transition: 'transform 0.1s ease-out',
                 width: '60px',
                 height: '60px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
-              onClick={() => handleCharClick(charObj.char)}
+              onClick={() => handleCharClick(charObj.char, charObj.id)}
             >
               {renderChar(charObj.char)}
             </div>

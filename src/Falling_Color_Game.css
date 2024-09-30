@@ -12,3 +12,7 @@
 .fade-out {
   animation: fadeOut 1s forwards;
 }
+
+.brightness-150 {
+  filter: brightness(1.5);
+}
