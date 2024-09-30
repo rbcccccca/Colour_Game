@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from './components/ui/button';
-import { Pause, Play, RefreshCw, Eye, ArrowLeft, Info } from 'lucide-react';
+import { Pause, Play, RefreshCw, Eye, ArrowLeft, Info, Home } from 'lucide-react';
 import './Falling_Color_Game.css';
 import ColorGameRules from './ColorGameRules';
+
+interface FallingColorGameProps {
+  onHome: () => void;
+}
 
 interface FallingChar {
   char: string;
@@ -34,7 +38,7 @@ const getComplementaryColor = (hex: string) => {
   return rgbToHex(255 - r, 255 - g, 255 - b);
 };
 
-const FallingColorGame: React.FC = () => {
+const FallingColorGame: React.FC<FallingColorGameProps> = ({ onHome }) => {
   const [currentColor, setCurrentColor] = useState('');
   const [complementaryColor, setComplementaryColor] = useState('');
   const [fallingChars, setFallingChars] = useState<FallingChar[]>([]);
@@ -197,6 +201,9 @@ const FallingColorGame: React.FC = () => {
   return (
     <div className="w-full h-screen relative overflow-hidden" style={{ backgroundColor: `#${currentColor}` }}>
       <div className="absolute top-0 right-0 p-4 flex items-center">
+        <Button onClick={onHome} className="mr-2" variant="outline">
+          <Home size={24} />
+        </Button>
         <Button onClick={toggleRules} className="mr-2" variant="outline">
           <Info size={24} />
         </Button>
@@ -287,8 +294,11 @@ const FallingColorGame: React.FC = () => {
                 <Button onClick={togglePause} className="mb-4" variant="outline" size="lg">
                   <Play size={32} />
                 </Button>
-                <Button onClick={restartGame} variant="outline" size="lg">
+                <Button onClick={restartGame} className="mb-4" variant="outline" size="lg">
                   <RefreshCw size={32} />
+                </Button>
+                <Button onClick={onHome} variant="outline" size="lg">
+                  <Home size={32} />
                 </Button>
               </div>
             </div>
