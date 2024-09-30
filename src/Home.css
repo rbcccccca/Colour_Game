@@ -1,10 +1,10 @@
-.home-container {
+ .home-container {
     width: 100vw;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #f0f8ff; /* Light blue background */
+    background-color: #f0f8ff;
     overflow: hidden;
     position: relative;
   }
@@ -19,26 +19,15 @@
   .shape {
     position: absolute;
     opacity: 0.6;
-    animation: float 15s infinite ease-in-out;
+    animation: float infinite ease-in-out;
   }
   
   .circle {
-    width: 100px;
-    height: 100px;
     border-radius: 50%;
-    background-color: #ff69b4; /* Hot pink */
-    left: 10%;
-    top: 20%;
   }
   
   .triangle {
-    width: 0;
-    height: 0;
-    border-left: 50px solid transparent;
-    border-right: 50px solid transparent;
-    border-bottom: 86px solid #00ced1; /* Dark turquoise */
-    right: 15%;
-    top: 30%;
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   }
   
   .square {
@@ -50,12 +39,11 @@
   }
   
   .pentagon {
-    width: 54px;
-    height: 52px;
-    background-color: #9370db; /* Medium purple */
     clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-    right: 25%;
-    bottom: 30%;
+  }
+  
+  .hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   }
   
   @keyframes float {
@@ -91,7 +79,7 @@
     font-size: 1.2rem;
     font-weight: bold;
     color: white;
-    background-color: #ff69b4; /* Hot pink */
+    background-color: #ff69b4;
     border: none;
     border-radius: 50px;
     cursor: pointer;
@@ -102,7 +90,7 @@
   .game-button:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    background-color: #ff1493; /* Deeper pink on hover */
+    background-color: #ff1493;
   }
   
   .game-button:active {
