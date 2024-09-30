@@ -8,7 +8,7 @@ function Home({ onStartFallingGame, onStartMatcherGame, onStartColorMixingGame }
 
   useEffect(() => {
     setGeneratedShapes(generateShapes());
-  }, [generateShapes]); // Add generateShapes to the dependency array  
+  }, []); // Add generateShapes to the dependency array  
 
   const generateShapes = () => {
     const newShapes = [];
