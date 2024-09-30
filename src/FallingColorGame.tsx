@@ -62,7 +62,7 @@ const FallingColorGame: React.FC = () => {
         char,
         id: `${char}-${i}-${Date.now()}`,
         position: Math.random() * 90 + 5,
-        topPosition: Math.random() * 80,
+        topPosition: Math.random() * 180 - 80, // Start characters above and below the visible area
         speed: 0.2 + Math.random() * 0.3,
         rotation: Math.random() * 360,
         isClicked: false,
@@ -107,15 +107,24 @@ const FallingColorGame: React.FC = () => {
     if (gameActive && !gamePaused) {
       interval = setInterval(() => {
         setFallingChars((prevChars: FallingChar[]) => {
-          return prevChars.map(char => ({
-            ...char,
-            topPosition: char.topPosition + char.speed,
-            rotation: (char.rotation + 0.5) % 360,
-            ...(char.topPosition > 100 && {
-              topPosition: 0,
-              position: Math.random() * 90 + 5,
-            }),
-          }));
+          return prevChars.map(char => {
+            let newTopPosition = char.topPosition + char.speed;
+            if (newTopPosition > 120) {  // If character goes below the screen
+              newTopPosition = -20;  // Move it back above the screen
+              // Randomize horizontal position when looping
+              return {
+                ...char,
+                topPosition: newTopPosition,
+                position: Math.random() * 90 + 5,
+                rotation: Math.random() * 360,
+              };
+            }
+            return {
+              ...char,
+              topPosition: newTopPosition,
+              rotation: (char.rotation + 0.5) % 360,
+            };
+          });
         });
       }, 50);
     }
@@ -243,6 +252,7 @@ const FallingColorGame: React.FC = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                opacity: charObj.topPosition < 0 || charObj.topPosition > 100 ? 0 : 1,
               }}
               onClick={() => handleCharClick(charObj.char, charObj.id)}
             >
@@ -251,11 +261,10 @@ const FallingColorGame: React.FC = () => {
           ))}
           {clickedChar && (
             <div 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-9xl font-bold opacity-0 animate-fade-out"
+              className="absolute top-1/2 left-1/2 text-9xl font-bold fade-out"
               style={{
                 color: `#${complementaryColor}`,
                 textShadow: `0 0 10px #${currentColor}`,
-                animation: 'fadeOut 1s forwards',
               }}
             >
               {clickedChar}
