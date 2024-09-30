@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Home.css';
 
-function Home({ onStartFallingGame, onStartMatcherGame }) {
+function Home({ onStartFallingGame, onStartMatcherGame, onStartColorMixingGame }) { // New prop for color mixing game
   const shapes = ['circle', 'triangle', 'square', 'pentagon', 'hexagon'];
   const colors = ['#ff69b4', '#00ced1', '#ffa500', '#9370db', '#32cd32', '#ff6347'];
   const [generatedShapes, setGeneratedShapes] = useState([]);
@@ -61,6 +61,9 @@ function Home({ onStartFallingGame, onStartMatcherGame }) {
           </button>
           <button className="game-button" onClick={onStartMatcherGame}>
             ?= Matching
+          </button>
+          <button className="game-button" onClick={onStartColorMixingGame}>  {/* New button for Color Mixing Game */}
+            @@@@ Mixing
           </button>
         </div>
       </div>

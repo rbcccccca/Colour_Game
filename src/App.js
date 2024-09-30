@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import FallingColorGame from './FallingColorGame';
 import ColorMatcherGame from './ColorMatcherGame';
+import ColorMixingGame from './ColorMixingGame'; // Import ColorMixingGame
 import Home from './Home';
 
 function App() {
@@ -9,6 +10,7 @@ function App() {
   const navigateToHome = () => setCurrentGame('home');
   const startFallingGame = () => setCurrentGame('falling');
   const startMatcherGame = () => setCurrentGame('matcher');
+  const startColorMixingGame = () => setCurrentGame('colorMixing'); // Handler for ColorMixingGame
 
   return (
     <div className="App">
@@ -16,6 +18,7 @@ function App() {
         <Home
           onStartFallingGame={startFallingGame}
           onStartMatcherGame={startMatcherGame}
+          onStartColorMixingGame={startColorMixingGame} // Pass the handler to Home
         />
       )}
       {currentGame === 'falling' && (
@@ -23,6 +26,9 @@ function App() {
       )}
       {currentGame === 'matcher' && (
         <ColorMatcherGame onHome={navigateToHome} />
+      )}
+      {currentGame === 'colorMixing' && (
+        <ColorMixingGame onHome={navigateToHome} /> 
       )}
     </div>
   );
