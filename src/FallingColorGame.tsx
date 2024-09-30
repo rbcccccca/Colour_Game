@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from './components/ui/button';
-import { Pause, Play, RefreshCw, Eye, ArrowLeft } from 'lucide-react';
-import './Falling_Color_Game.css';  // Make sure to create this CSS file
+import { Pause, Play, RefreshCw, Eye, ArrowLeft, Info } from 'lucide-react';
+import './Falling_Color_Game.css';
 import ColorGameRules from './ColorGameRules';
 
 interface FallingChar {
@@ -68,7 +68,7 @@ const FallingColorGame: React.FC = () => {
         char,
         id: `${char}-${i}-${Date.now()}`,
         position: Math.random() * 90 + 5,
-        topPosition: Math.random() * 180 - 80, // Start characters above and below the visible area
+        topPosition: Math.random() * 180 - 80,
         speed: 0.2 + Math.random() * 0.3,
         rotation: Math.random() * 360,
         isClicked: false,
@@ -83,6 +83,7 @@ const FallingColorGame: React.FC = () => {
     setScore(0);
     setTimeLeft(60);
     setLevel(1);
+    setShowRules(false);  // Hide rules when the game starts
     newRound();
   }, [newRound]);
 
@@ -115,9 +116,8 @@ const FallingColorGame: React.FC = () => {
         setFallingChars((prevChars: FallingChar[]) => {
           return prevChars.map(char => {
             let newTopPosition = char.topPosition + char.speed;
-            if (newTopPosition > 120) {  // If character goes below the screen
-              newTopPosition = -20;  // Move it back above the screen
-              // Randomize horizontal position when looping
+            if (newTopPosition > 120) {
+              newTopPosition = -20;
               return {
                 ...char,
                 topPosition: newTopPosition,
@@ -197,6 +197,9 @@ const FallingColorGame: React.FC = () => {
   return (
     <div className="w-full h-screen relative overflow-hidden" style={{ backgroundColor: `#${currentColor}` }}>
       <div className="absolute top-0 right-0 p-4 flex items-center">
+        <Button onClick={toggleRules} className="mr-2" variant="outline">
+          <Info size={24} />
+        </Button>
         {gameActive && !gamePaused && (
           <>
             <Button onClick={toggleColorCode} className="mr-2" variant="outline">
