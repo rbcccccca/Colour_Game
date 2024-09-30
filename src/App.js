@@ -13,7 +13,7 @@ function App() {
   return (
     <div className="App">
       {currentGame === 'home' && (
-        <Home 
+        <Home
           onStartFallingGame={startFallingGame}
           onStartMatcherGame={startMatcherGame}
         />
