@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Home.css';
 
 function Home({ onStartFallingGame, onStartMatcherGame }) {
   const shapes = ['circle', 'triangle', 'square', 'pentagon', 'hexagon'];
   const colors = ['#ff69b4', '#00ced1', '#ffa500', '#9370db', '#32cd32', '#ff6347'];
+  const [generatedShapes, setGeneratedShapes] = useState([]);
+
+  useEffect(() => {
+    setGeneratedShapes(generateShapes());
+  }, []);
 
   const generateShapes = () => {
-    const generatedShapes = [];
-    for (let i = 0; i < 30; i++) {
+    const newShapes = [];
+    for (let i = 0; i < 50; i++) {
       const shape = shapes[Math.floor(Math.random() * shapes.length)];
       const color = colors[Math.floor(Math.random() * colors.length)];
       const size = Math.random() * (80 - 20) + 20; // Random size between 20px and 80px
       const left = Math.random() * 100; // Random left position
       const top = Math.random() * 100; // Random top position
-      const animationDuration = Math.random() * (20 - 5) + 5; // Random duration between 5s and 20s
+      const durationX = Math.random() * (15 - 5) + 5; // Random duration between 5s and 15s
+      const durationY = Math.random() * (15 - 5) + 5; // Random duration between 5s and 15s
+      const delayX = Math.random() * -15; // Random delay up to -15s to offset animations
+      const delayY = Math.random() * -15; // Random delay up to -15s to offset animations
+      const directionX = Math.random() < 0.5 ? 'alternate' : 'alternate-reverse';
+      const directionY = Math.random() < 0.5 ? 'alternate' : 'alternate-reverse';
 
-      generatedShapes.push(
+      newShapes.push(
         <div
           key={i}
           className={`shape ${shape}`}
@@ -25,29 +35,37 @@ function Home({ onStartFallingGame, onStartMatcherGame }) {
             height: `${size}px`,
             left: `${left}%`,
             top: `${top}%`,
-            animationDuration: `${animationDuration}s`,
+            animationName: 'floatX, floatY',
+            animationDuration: `${durationX}s, ${durationY}s`,
+            animationTimingFunction: 'ease-in-out, ease-in-out',
+            animationIterationCount: 'infinite, infinite',
+            animationDirection: `${directionX}, ${directionY}`,
+            animationDelay: `${delayX}s, ${delayY}s`,
           }}
         ></div>
       );
     }
-    return generatedShapes;
+    return newShapes;
   };
 
   return (
     <div className="home-container">
       <div className="floating-shapes">
-        {generateShapes()}
+        {generatedShapes}
       </div>
       <div className="content">
         <h1 className="title">Welcome to Colour Games!</h1>
         <div className="button-container">
           <button className="game-button" onClick={onStartFallingGame}>
-            Play Colour Coding
+            Colour Coding
           </button>
           <button className="game-button" onClick={onStartMatcherGame}>
-            Play Colour Matching
+            Colour Matching
           </button>
         </div>
+      </div>
+      <div className="credit">
+        Developed using AI Claude 3.5 • Designed by Roujia Feng
       </div>
     </div>
   );
