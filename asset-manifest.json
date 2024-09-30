@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/Colour_Game/static/css/main.35d2e515.css",
-    "main.js": "/Colour_Game/static/js/main.68e8992d.js",
+    "main.css": "/Colour_Game/static/css/main.eeaeea7e.css",
+    "main.js": "/Colour_Game/static/js/main.86d24849.js",
     "static/js/453.815ec8d4.chunk.js": "/Colour_Game/static/js/453.815ec8d4.chunk.js",
     "index.html": "/Colour_Game/index.html",
-    "main.35d2e515.css.map": "/Colour_Game/static/css/main.35d2e515.css.map",
-    "main.68e8992d.js.map": "/Colour_Game/static/js/main.68e8992d.js.map",
+    "main.eeaeea7e.css.map": "/Colour_Game/static/css/main.eeaeea7e.css.map",
+    "main.86d24849.js.map": "/Colour_Game/static/js/main.86d24849.js.map",
     "453.815ec8d4.chunk.js.map": "/Colour_Game/static/js/453.815ec8d4.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.35d2e515.css",
-    "static/js/main.68e8992d.js"
+    "static/css/main.eeaeea7e.css",
+    "static/js/main.86d24849.js"
   ]
 }
