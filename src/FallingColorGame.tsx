@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from './components/ui/button';
 import { Pause, Play, RefreshCw, Eye, ArrowLeft } from 'lucide-react';
 import './Falling_Color_Game.css';  // Make sure to create this CSS file
+import ColorGameRules from './ColorGameRules';
 
 interface FallingChar {
   char: string;
@@ -46,6 +47,11 @@ const FallingColorGame: React.FC = () => {
   const [level, setLevel] = useState(1);
   const [showColorCode, setShowColorCode] = useState(false);
   const [clickedChar, setClickedChar] = useState<string | null>(null);
+  const [showRules, setShowRules] = useState(true);
+
+  const toggleRules = () => {
+    setShowRules(!showRules);
+  };
 
   const newRound = useCallback(() => {
     const color = generateRandomColor();
@@ -210,7 +216,9 @@ const FallingColorGame: React.FC = () => {
           </Button>
         )}
       </div>
-      
+
+      {showRules && <ColorGameRules />}
+
       {gameActive && (
         <>
           <div className="absolute top-0 left-0 bg-black bg-opacity-50 text-white p-4">

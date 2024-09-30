@@ -1,10 +1,23 @@
 {
   "compilerOptions": {
-    "allowJs": true,             // Allows the use of JavaScript files
-    "jsx": "react",              // Use React JSX
-    "esModuleInterop": true,     // Ensures ES module interop
-    "skipLibCheck": true         // Skips type checking of declaration files
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
   },
-  "include": ["src/**/*"],       // Include all files in the src folder
-  "exclude": ["src/**/*.js"]     // Exclude JavaScript files to avoid overwriting conflicts
+  "include": ["src"]
 }
