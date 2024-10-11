@@ -68,7 +68,24 @@ function Home({ onStartFallingGame, onStartMatcherGame, onStartColorMixingGame }
         </div>
       </div>
       <div className="credit">
-        Developed using AI Claude 3.5 • Designed by Roujia Feng
+        Developed using AI Claude 3.5 • Designed by Roujia Feng •{' '}
+        <a href="https://github.com/rbcccccca/Colour_Game" target="_blank" rel="noopener noreferrer" className="github-link">
+          GitHub
+        </a>
+      </div>
+
+      {/* Info Button and Acknowledgment Section */}
+      <div className="info-button-container">
+        <button className="info-button">i</button>
+        <div className="acknowledgement">
+          <h3>Acknowledgement</h3>
+          <p>
+            I would like to thank my family, friends, and tutor for their support in optimising this game.
+          </p>
+          <p>
+          Special thanks to: Sijia, Marvin, Tin Lok, Natasha, and Brie.
+          </p>
+        </div>
       </div>
     </div>
   );

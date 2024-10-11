@@ -125,3 +125,80 @@
     color: rgba(0, 0, 0, 0.5);
     text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
   }
+
+/* Styles for the "i" button and acknowledgment combined */
+.info-button-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.info-button {
+  background-color: #f0f8ff;
+  color: #333;
+  border: 2px solid #333;
+  border-radius: 4px;
+  width: 30px;
+  height: 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  z-index: 1001; /* Make sure it's above other elements */
+}
+
+.info-button:hover {
+  background-color: #333;
+  color: #fff;
+  transform: scale(1.1);
+}
+
+.info-button:active {
+  transform: scale(0.95);
+}
+
+/* Adjusted acknowledgment styles to slide left */
+.acknowledgement {
+  position: absolute;
+  top: 0;
+  right: 30px;
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 0;
+  border-radius: 10px;
+  transition: width 0.5s ease-in-out;
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+}
+
+.info-button-container:hover .acknowledgement {
+  width: 600px;
+  padding: 10px 15px;
+  right: 40px; /* Adjust spacing between the button and the acknowledgment */
+}
+
+.acknowledgement h3 {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 1rem;
+}
+
+.acknowledgement p {
+  color: rgba(0, 0, 0, 0.6);
+  margin-top: 5px;
+  font-size: 0.9rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #333;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
