@@ -51,12 +51,13 @@ const cmykToRgb = (c: number, m: number, y: number, k: number) => {
 const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
   const [targetColor, setTargetColor] = useState(generateRandomColor());
   const [mixedColor, setMixedColor] = useState({ c: 0, m: 0, y: 0, k: 0 });
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(600);
   const [score, setScore] = useState(0);
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showGreenTick, setShowGreenTick] = useState(false);
+  const [colorMatchPercentage, setColorMatchPercentage] = useState(0);
 
 
   const intervalId = useRef<NodeJS.Timeout | null>(null);
@@ -66,7 +67,7 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
     setGameActive(true);
     setGamePaused(false);
     setScore(0);
-    setTimeLeft(120);
+    setTimeLeft(600);
     setTargetColor(generateRandomColor());
     setMixedColor({ c: 0, m: 0, y: 0, k: 0 });
     setShowHint(false); // Reset hint on game restart
@@ -125,10 +126,27 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
       setMixedColor({ c: 0, m: 0, y: 0, k: 0 });
       setShowGreenTick(true);
       setTimeout(() => setShowGreenTick(false), 1000); // Hide after 1 second
+      setColorMatchPercentage(0); // Reset match percentage for new color
     }
   }, [mixedColor, targetColor]);
 
-  
+  // Function to calculate color match percentage
+  const calculateColorMatchPercentage = useCallback(() => {
+    const { c: mixedC, m: mixedM, y: mixedY, k: mixedK } = mixedColor;
+    const targetCmyk = rgbToCmyk(targetColor.r, targetColor.g, targetColor.b);
+    const { c: targetC, m: targetM, y: targetY, k: targetK } = targetCmyk;
+
+    const cDiff = Math.abs(mixedC - targetC);
+    const mDiff = Math.abs(mixedM - targetM);
+    const yDiff = Math.abs(mixedY - targetY);
+    const kDiff = Math.abs(mixedK - targetK);
+
+    const totalDiff = cDiff + mDiff + yDiff + kDiff;
+    const maxPossibleDiff = 400; // 100 for each CMYK component
+
+    const matchPercentage = 100 - (totalDiff / maxPossibleDiff) * 100;
+    setColorMatchPercentage(Math.round(matchPercentage));
+  }, [mixedColor, targetColor]);  
 
   // Handle Timer
   useEffect(() => {
@@ -146,6 +164,13 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
       checkColorMatch();
     }
   }, [mixedColor, gameActive, gamePaused, checkColorMatch]);
+
+  // Update color match percentage whenever mixed color changes
+  useEffect(() => {
+    if (gameActive && !gamePaused) {
+      calculateColorMatchPercentage();
+    }
+  }, [mixedColor, gameActive, gamePaused, calculateColorMatchPercentage]);
 
   const togglePause = () => {
     setGamePaused(!gamePaused);
@@ -166,6 +191,7 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
         <div className="flex items-center">
           <p className="mr-4">Time: {timeLeft}s</p>
           <p className="mr-4">Score: {score}</p>
+          <p className="mr-4">Match: {colorMatchPercentage}%</p>
           {gameActive && (
             <Button onClick={togglePause} variant="outline" size="sm">
               {gamePaused ? <Play size={16} /> : <Pause size={16} />}
@@ -178,7 +204,7 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
         {/* CMYK Hint (shows only when showHint is true) */}
         {showHint && (
           <div className="mt-2 text-sm text-gray-700">
-            Hint (CMYK): C: {backgroundCmyk.c}%, M: {backgroundCmyk.m}%, Y: {backgroundCmyk.y}%, K: {backgroundCmyk.k}%
+            Hint (CMYK): C: {backgroundCmyk.c}, M: {backgroundCmyk.m}, Y: {backgroundCmyk.y} K: {backgroundCmyk.k}
           </div>
         )}
       </div>
@@ -212,19 +238,21 @@ const ColorMixingGame: React.FC<ColorMixingGameProps> = ({ onHome }) => {
             min={0}
             max={255}
           />
-            <div className="h-40 w-14 rounded-lg relative overflow-hidden">
-              <div
-                className="w-full absolute bottom-0"
-                style={{
-                  height: `${(mixedColor[color] / 255) * 100}%`,
-                  backgroundColor: 
-                    color === 'c' ? 'blue' : 
-                    color === 'm' ? 'red' :
-                    color === 'y' ? 'yellow' :
-                    color === 'k' ? 'black' : 'transparent', // Default in case color is none of the above
-                }}
-              />
-            </div>
+          <div className="h-40 w-14 rounded-lg relative overflow-hidden">
+            <div
+              className="w-full absolute bottom-0"
+              style={{
+                height: `${(mixedColor[color] / 255) * 100}%`,
+                backgroundColor: 
+                  color === 'c' ? '#00FFFF' :   // Cyan
+                  color === 'm' ? '#FF00FF' :   // Magenta
+                  color === 'y' ? '#FFFF00' :   // Yellow
+                  color === 'k' ? '#000000' :   // Black
+                  'transparent',                // Default in case color is none of the above
+              }}
+            />
+          </div>
+
 
             <div className="flex justify-center space-x-1 mb-10"> {/* Flex for side-by-side layout and margin */}
               <Button

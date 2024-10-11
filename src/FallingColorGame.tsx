@@ -44,7 +44,7 @@ const FallingColorGame: React.FC<FallingColorGameProps> = ({ onHome }) => {
   const [fallingChars, setFallingChars] = useState<FallingChar[]>([]);
   const [userGuess, setUserGuess] = useState('');
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(60);
+  const [timeLeft, setTimeLeft] = useState(600);
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
   const [feedback, setFeedback] = useState('');
@@ -85,7 +85,7 @@ const FallingColorGame: React.FC<FallingColorGameProps> = ({ onHome }) => {
     setGameActive(true);
     setGamePaused(false);
     setScore(0);
-    setTimeLeft(60);
+    setTimeLeft(600);  // Set to 600 seconds (10 minutes)
     setLevel(1);
     setShowRules(false);  // Hide rules when the game starts
     newRound();

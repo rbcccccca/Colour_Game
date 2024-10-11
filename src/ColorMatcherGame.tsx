@@ -3,6 +3,7 @@ import { Slider } from './components/ui/slider';
 import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
 import { Play, Pause, RefreshCw, Home, Eye, EyeOff, Check } from 'lucide-react'; // Add the Check icon
+import './fireworks.css'; // Import the CSS file
 
 const generateRandomColor = () => {
   const r = Math.floor(Math.random() * 256);
@@ -15,6 +16,11 @@ const rgbToHex = (r: number, g: number, b: number) => {
   return '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
 };
 
+const componentToHex = (c: number) => {
+  const hex = c.toString(16);
+  return hex.length === 1 ? "0" + hex : hex;
+};
+
 interface ColorMatcherGameProps {
   onHome: () => void;
 }
@@ -23,35 +29,78 @@ const ColorMatcherGame: React.FC<ColorMatcherGameProps> = ({ onHome }) => {
   const [targetColor, setTargetColor] = useState(generateRandomColor());
   const [userColor, setUserColor] = useState({ r: 128, g: 128, b: 128 });
   const [score, setScore] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(120);
+  const [timeLeft, setTimeLeft] = useState(600);
   const [gameActive, setGameActive] = useState(false);
   const [gamePaused, setGamePaused] = useState(false);
   const [showHint, setShowHint] = useState(false); // New state for hint visibility
   const [showTick, setShowTick] = useState(false); // State for showing the tick icon
+  const [colorMatchPercentage, setColorMatchPercentage] = useState(0);
+  const [showFireworks, setShowFireworks] = useState(false);
+  const [fireworks, setFireworks] = useState<React.ReactNode[]>([]);
 
   const startGame = useCallback(() => {
     setGameActive(true);
     setGamePaused(false);
     setScore(0);
-    setTimeLeft(120);
+    setTimeLeft(600);
     setTargetColor(generateRandomColor());
-    setUserColor({ r: 128, g: 128, b: 128 });
+    setUserColor({ r: 255, g: 255, b: 255 });
     setShowHint(false); // Reset hint when the game starts
     setShowTick(false); // Reset tick visibility when the game starts
+    setColorMatchPercentage(0);
+    setShowFireworks(false);
+  }, []);
+
+  const calculateColorMatchPercentage = useCallback(() => {
+    const rDiff = Math.abs(userColor.r - targetColor.r);
+    const gDiff = Math.abs(userColor.g - targetColor.g);
+    const bDiff = Math.abs(userColor.b - targetColor.b);
+    
+    const totalDiff = rDiff + gDiff + bDiff;
+    const maxPossibleDiff = 255 * 3; // Maximum possible difference across all three channels
+    
+    const matchPercentage = 100 - (totalDiff / maxPossibleDiff) * 100;
+    setColorMatchPercentage(Math.round(matchPercentage));
+  }, [userColor, targetColor]);
+
+  const isColorMatch = useCallback((userColor: { r: number, g: number, b: number }, targetColor: { r: number, g: number, b: number }, tolerance: number = 2) => {
+    return Math.abs(userColor.r - targetColor.r) <= tolerance &&
+           Math.abs(userColor.g - targetColor.g) <= tolerance &&
+           Math.abs(userColor.b - targetColor.b) <= tolerance;
+  }, []);
+  
+  const generateFireworks = useCallback(() => {
+    const fireworksCount = Math.floor(Math.random() * 10) + 15; // Generate 15-25 fireworks
+    const newFireworks = [];
+
+    for (let i = 0; i < fireworksCount; i++) {
+      const style = {
+        '--endX': `${Math.random() * 100}%`,
+        '--endY': `${Math.random() * 60}%`,
+        animationDuration: `${1.5 + Math.random()}s`,
+        animationDelay: `${Math.random() * 0.5}s`,
+      } as React.CSSProperties;
+
+      newFireworks.push(<div key={i} className="firework" style={style}></div>);
+    }
+
+    setFireworks(newFireworks);
   }, []);
 
   const checkColor = useCallback(() => {
-    if (
-      userColor.r === targetColor.r &&
-      userColor.g === targetColor.g &&
-      userColor.b === targetColor.b
-    ) {
+    if (isColorMatch(userColor, targetColor)) {
       setScore(prevScore => prevScore + 1);
       setTargetColor(generateRandomColor());
-      setShowTick(true); // Show the tick icon
-      setTimeout(() => setShowTick(false), 1000); // Hide the tick after 1 second
+      setShowTick(true);
+      setShowFireworks(true);
+      generateFireworks();
+      setTimeout(() => setShowTick(false), 1000);
+      setTimeout(() => {
+        setShowFireworks(false);
+      }, 2000);
+      setColorMatchPercentage(0); // Reset match percentage for new color
     }
-  }, [userColor, targetColor]);
+  }, [userColor, targetColor, isColorMatch, generateFireworks]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -66,8 +115,10 @@ const ColorMatcherGame: React.FC<ColorMatcherGameProps> = ({ onHome }) => {
   useEffect(() => {
     if (gameActive && !gamePaused) {
       checkColor();
+      calculateColorMatchPercentage();
     }
-  }, [userColor, gameActive, gamePaused, checkColor]);
+  }, [userColor, gameActive, gamePaused, checkColor, calculateColorMatchPercentage]);
+
 
   const handleSliderChange = (color: 'r' | 'g' | 'b', value: number[]) => {
     setUserColor(prev => ({ ...prev, [color]: value[0] }));
@@ -92,11 +143,19 @@ const ColorMatcherGame: React.FC<ColorMatcherGameProps> = ({ onHome }) => {
     <div className="w-full h-screen flex flex-col items-center justify-between relative overflow-hidden" 
          style={{ backgroundColor: rgbToHex(targetColor.r, targetColor.g, targetColor.b) }}>
       
+      {/* Fireworks effect */}
+      {showFireworks && (
+        <div className="fireworks-container">
+          {fireworks}
+        </div>
+      )}
+      
       {/* Top bar with time, score, and hint */}
       <div className="z-10 bg-white bg-opacity-80 px-4 py-2 rounded-b-lg shadow-lg absolute top-0 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
         <div className="flex items-center">
           <p className="mr-4">Time: {timeLeft}s</p>
           <p className="mr-4">Score: {score}</p>
+          <p className="mr-4">Match: {colorMatchPercentage}%</p>
           {gameActive && (
             <Button onClick={togglePause} variant="outline" size="sm">
               {gamePaused ? <Play size={16} /> : <Pause size={16} />}
@@ -162,76 +221,79 @@ const ColorMatcherGame: React.FC<ColorMatcherGameProps> = ({ onHome }) => {
         {gameActive && !gamePaused && (
           <div className="flex justify-between items-end">
             <div className="flex-1 mr-4">
-                <label className="block mb-1 text-lg font-bold">Red</label>
-                <div className="flex items-center">
-
-                    <Slider
-                    value={[userColor.r]}
-                    min={0}
-                    max={255}
-                    step={1}
-                    onValueChange={(value) => handleSliderChange('r', value)}
-                    className="flex-grow mr-2"
-                    />
-                    <Input
-                    type="number"
-                    value={userColor.r}
-                    onChange={(e) => handleInputChange('r', e.target.value)}
-                    className="w-25 h-15 text-lg font-bold"
-                    min={0}
-                    max={255}
-                    />
+              <label className="block mb-1 text-lg font-bold">Red</label>
+              <div className="flex items-center">
+                <Slider
+                  value={[userColor.r]}
+                  min={0}
+                  max={255}
+                  step={1}
+                  onValueChange={(value) => handleSliderChange('r', value)}
+                  className="flex-grow mr-2"
+                />
+                <Input
+                  type="number"
+                  value={userColor.r}
+                  onChange={(e) => handleInputChange('r', e.target.value)}
+                  className="w-20 h-10 text-lg font-bold mr-2"
+                  min={0}
+                  max={255}
+                />
+                <div className="w-16 text-center font-mono text-lg">
+                  {componentToHex(userColor.r).toUpperCase()}
                 </div>
+              </div>
             </div>
-
             
             <div className="flex-1 mr-4">
-                <label className="block mb-1 text-lg font-bold">Green</label>
-                <div className="flex items-center">
-
-                    <Slider
-                    value={[userColor.g]}
-                    min={0}
-                    max={255}
-                    step={1}
-                    onValueChange={(value) => handleSliderChange('g', value)}
-                    className="flex-grow mr-2"
-                    />
-                    <Input
-                    type="number"
-                    value={userColor.g}
-                    onChange={(e) => handleInputChange('g', e.target.value)}
-                    className="w-25 h-15 text-lg font-bold"
-                    min={0}
-                    max={255}
-                    />
+              <label className="block mb-1 text-lg font-bold">Green</label>
+              <div className="flex items-center">
+                <Slider
+                  value={[userColor.g]}
+                  min={0}
+                  max={255}
+                  step={1}
+                  onValueChange={(value) => handleSliderChange('g', value)}
+                  className="flex-grow mr-2"
+                />
+                <Input
+                  type="number"
+                  value={userColor.g}
+                  onChange={(e) => handleInputChange('g', e.target.value)}
+                  className="w-20 h-10 text-lg font-bold mr-2"
+                  min={0}
+                  max={255}
+                />
+                <div className="w-16 text-center font-mono text-lg">
+                  {componentToHex(userColor.g).toUpperCase()}
                 </div>
+              </div>
             </div>
-
             
             <div className="flex-1">
-                <label className="block mb-1 text-lg font-bold">Blue</label>
-                <div className="flex items-center">
-
-                    <Slider
-                    value={[userColor.b]}
-                    min={0}
-                    max={255}
-                    step={1}
-                    onValueChange={(value) => handleSliderChange('b', value)}
-                    className="flex-grow mr-2"
-                    />
-                    <Input
-                    type="number"
-                    value={userColor.b}
-                    onChange={(e) => handleInputChange('b', e.target.value)}
-                    className="w-25 h-15 text-lg font-bold"
-                    min={0}
-                    max={255}
-                    />
+              <label className="block mb-1 text-lg font-bold">Blue</label>
+              <div className="flex items-center">
+                <Slider
+                  value={[userColor.b]}
+                  min={0}
+                  max={255}
+                  step={1}
+                  onValueChange={(value) => handleSliderChange('b', value)}
+                  className="flex-grow mr-2"
+                />
+                <Input
+                  type="number"
+                  value={userColor.b}
+                  onChange={(e) => handleInputChange('b', e.target.value)}
+                  className="w-20 h-10 text-lg font-bold mr-2"
+                  min={0}
+                  max={255}
+                />
+                <div className="w-16 text-center font-mono text-lg">
+                  {componentToHex(userColor.b).toUpperCase()}
                 </div>
+              </div>
             </div>
-
           </div>
         )}
       </div>

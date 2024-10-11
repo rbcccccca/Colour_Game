@@ -1,0 +1,104 @@
+@keyframes firework {
+  0% { transform: translate(var(--startX), var(--startY)); width: var(--initialSize); opacity: 1; }
+  50% { width: 0.5vmin; opacity: 1; }
+  100% { transform: translate(var(--endX), var(--endY)); width: var(--finalSize); opacity: 0; }
+}
+
+.fireworks-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.firework {
+  --initialSize: 0.5vmin;
+  --finalSize: 45vmin;
+  --particleSize: 0.2vmin;
+  --color1: yellow;
+  --color2: khaki;
+  --color3: white;
+  --color4: lime;
+  --color5: gold;
+  --color6: mediumseagreen;
+  --startX: -5%;
+  --startY: 105%;
+  --endX: 50%;
+  --endY: 50%;
+  content: "";
+  position: absolute;
+  width: var(--initialSize);
+  aspect-ratio: 1;
+  background: 
+    radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 50% 0%,
+    radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 50%,
+    radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 50% 100%,
+    radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 0% 50%,
+    radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 80% 90%,
+    radial-gradient(circle, var(--color6) var(--particleSize), #0000 0) 95% 90%,
+    radial-gradient(circle, var(--color1) var(--particleSize), #0000 0) 90% 70%,
+    radial-gradient(circle, var(--color2) var(--particleSize), #0000 0) 100% 60%,
+    radial-gradient(circle, var(--color3) var(--particleSize), #0000 0) 20% 30%,
+    radial-gradient(circle, var(--color4) var(--particleSize), #0000 0) 0% 100%,
+    radial-gradient(circle, var(--color5) var(--particleSize), #0000 0) 70% 10%;
+  background-size: var(--initialSize) var(--initialSize);
+  background-repeat: no-repeat;
+  animation: firework 2s ease-out infinite;
+}
+
+.firework::before,
+.firework::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(calc(var(--rotation) * 1deg)) scale(var(--scale));
+  background: inherit;
+  background-size: var(--initialSize) var(--initialSize);
+}
+
+.firework::before {
+  --rotation: 40;
+  --scale: 1.3;
+}
+
+.firework::after {
+  --rotation: 170;
+  --scale: 1.15;
+}
+
+/* Add more varied firework styles */
+.firework:nth-child(even) {
+  --startX: 105%;
+}
+
+.firework:nth-child(3n) {
+  --finalSize: 55vmin;
+  --particleSize: 0.25vmin;
+}
+
+.firework:nth-child(5n) {
+  --finalSize: 35vmin;
+  --particleSize: 0.15vmin;
+}
+
+/* Add more color variations */
+.firework:nth-child(4n) {
+  --color1: #ff0000;
+  --color2: #ff7f00;
+  --color3: #ffff00;
+  --color4: #00ff00;
+  --color5: #0000ff;
+  --color6: #8b00ff;
+}
+
+.firework:nth-child(4n+1) {
+  --color1: #ff1493;
+  --color2: #ff69b4;
+  --color3: #ff6347;
+  --color4: #ff4500;
+  --color5: #ffa500;
+  --color6: #ffd700;
+}
